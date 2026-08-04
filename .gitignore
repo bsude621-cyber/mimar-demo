@@ -1,0 +1,5 @@
+_tools/
+node_modules/
+.claude/settings.local.json
+# ham Higgsfield çıktıları (130 MB) — repoya girmesin, yerelde dursun
+_raw/
