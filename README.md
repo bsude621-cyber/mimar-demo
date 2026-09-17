@@ -151,7 +151,8 @@ Masaüstü görünümü değişmedi — değişikliklerin tamamı `@media (max-w
    `aria-expanded` + `aria-label` güncellemesi, **Esc** ile kapanma ve odağın düğmeye dönmesi,
    menü içinde odak tuzağı (Tab döngüsü), açıldığında ilk linke odak, arka plan kaydırma kilidi,
    ekran büyüyünce kilidin bırakılması. Dokunma hedefi: hamburger 44×44, menü linkleri 57px.
-3. **Yazı boyutları** (≤768px): gövde metni ≥16px, etiket/ikincil metin ≥13px, satır yüksekliği ≥1.5.
+3. **Yazı boyutları** (≤768px): gövde metni ≥16px, etiket/ikincil metin ≥13px, satır yüksekliği ≥1.5
+   (hero bloğu istisna — 2. turda 15px gövde / 12,5px etikete indirildi, aşağıda).
    8–12,5px'e düşen tüm yerler düzeltildi (`brand-sub`, `kick`, `proj-meta`, `stat .lbl`,
    `tile-lbl`, `scrub-specs .l`, `btn`, footer linkleri, demo anahtarı).
    Başlıktaki `brand-sub` etiketi mobilde gizlendi (aynı metin footer'da 13px olarak duruyor),
@@ -181,31 +182,47 @@ Masaüstü görünümü değişmedi — değişikliklerin tamamı `@media (max-w
 İlk turda punto ve dokunma hedefleri büyütülürken hero şişmişti; metin bloğu ekranın
 yarısını kaplıyor, video anlaşılmıyordu. Üç ayrı sorun çıktı ve üçü de ölçülerek çözüldü:
 
-**a) Hero küçültüldü** (≤768px): H1 42→**30px** (375) / 31px (390), kicker tek satıra indi
-(`letter-spacing .1em`), alt metin 3 satıra kırpıldı (`-webkit-line-clamp:3`), iki CTA
-**yan yana** (her biri ≥48px yükseklik, 13px etiket), hero alt dolgusu 10vh+70px → 70+64px.
-Gövde ≥16px, etiket ≥13px, hedef ≥44px kuralları korundu.
+**a) Hero küçültüldü** (≤768px; Mert telefonda iki kez baktı, iki turda inceldi):
+H1 42→30→**24,75px** (375) / 25,7px (390), kicker 13→**12,5px** ve tek satır,
+alt metin 16→**15px, satır aralığı 1,4** ve **2 satıra** kırpıldı (`-webkit-line-clamp:2`),
+iki CTA **yan yana** ve tek satır etiketle **48px** yükseklik (12,5px etiket,
+`letter-spacing .03em`, dolgu 10/6px), hero alt dolgusu 10vh+70px → 70+64px.
+Bu bölümde geçerli alt sınırlar: gövde ≥15px, etiket ≥12px, dokunma hedefi ≥44px
+(butonlar 48px). Sayfanın geri kalanında gövde ≥16px / etiket ≥13px kuralı sürüyor.
 
-| Genişlik | metin bloğu / ekran alanı | H1 | ilk ekranda video |
-|---|---|---|---|
-| 320×700 | **%34,5** | 27px | evet |
-| 375×812 | **%29,0** | 30px | evet (üst ~%50 temiz) |
-| 390×844 | **%28,3** | 31,2px | evet |
-| 414×896 | **%25,5** | 33px | evet |
+| Genişlik | metin bloğu / ekran | H1 | buton | metin üstü kesintisiz video | metin altı boşluk |
+|---|---|---|---|---|---|
+| 320×700 | %25,2 | 24px | 56px (etiket 2 satır) | 365px (%52) | 67px |
+| 375×812 | **%21,5** | 24,75px | 48px | **483px (%59)** | 67px |
+| 390×844 | **%21,0** | 25,7px | 48px | **513px (%61)** | 67px |
+| 414×896 | %20,0 | 26px | 48px | 564px (%63) | 67px |
+
+Hedef ≤%25'ti. "Metin üstü kesintisiz video" = ekranın tepesinden metin bloğunun üstüne
+kadar kesintisiz görünen video; "metin altı boşluk" = CTA'ların altı ile sabit alt bar arası
+(senaryo hapı burada duruyor, CTA'lara değmiyor).
+
+**Hero CTA'ları korundu** (diyetisyen/Duştaş'ta olduğu gibi kaldırılmadı): buradaki iki düğme
+"Projeleri Gör" (proje galerisine kaydırır) ve "Ücretsiz Ön Görüşme" (iletişim bölümüne
+kaydırır); alt bardaki "Ara" ve "WhatsApp" ise doğrudan arama/mesaj. Aynı eylem iki kez
+görünmüyor, o yüzden kaldırmak yerine küçültüldü.
 
 **b) Karartma yeniden kuruldu**: `.hero-scrim` mobilde hafifledi (üst %52 neredeyse temiz),
 metnin arkasına ayrı bir yumuşak panel kondu (`.hero-inner::before`, %38'den başlıyor).
 Kontrast, videonun **en açık pikseli** üzerinden ölçüldü (metin gizlenip ekran görüntüsü
 alınarak, üç hero senaryosu için):
 
+Son puntolarla (375×812, metin bloğu küçülüp aşağı indiği için panelin daha koyu bölgesine
+denk geliyor — kontrast yükseldi):
+
 | | h=1 Cephe | h=2 Masa | h=3 Atriyum |
 |---|---|---|---|
-| kicker (13px, copper-bright) | 7,77 | 5,92 | 7,33 |
-| H1 (30px, frost) | 13,01 | 9,96 | 9,34 |
-| alt metin (16px) | 11,31 | 9,97 | 6,71 |
-| ghost CTA (13px, frost) | 15,38 | 15,10 | 13,90 |
+| kicker (12,5px, copper-bright) | 9,00 | 5,99 | 6,37 |
+| H1 (24,75px, frost) | 14,32 | 10,51 | 8,20 |
+| alt metin (15px) | 12,53 | 10,55 | 8,75 |
+| ghost CTA (12,5px, frost) | 15,52 | 14,21 | 14,43 |
 
-Hepsi ≥4,5:1. Alt metin mobilde `rgba(232,238,244,.88)` yapıldı (masaüstünde .68 kaldı).
+Hepsi ≥4,5:1 (küçük metin için gereken eşik). Alt metin mobilde `rgba(232,238,244,.9)`
+yapıldı; masaüstünde .68 kaldı.
 
 **c) Mobil kadraj ölçüldü**: 16:9 video dikey ekranda `object-fit:cover` ile kırpılınca
 yatayda yalnızca **%26'lık** bir şerit görünüyor; varsayılan `50%` kadrajda üç videoda da
@@ -223,15 +240,19 @@ ile 2,5 MB bütçesinin altında kaldı.
 
 ### Ölçümler (ölçüldü, tahmin değil)
 
-| Genişlik | Yatay taşma | 44px altı hedef | 13px altı yazı | satır yüksekliği <1.5 | konsol |
+| Genişlik | Yatay taşma | 44px altı hedef | 12px altı yazı | 13px altı yazı | konsol |
 |---|---|---|---|---|---|
-| 320×700 | yok | 0 | 0 | 0 | temiz |
-| 360×780 | yok | 0 | 0 | 0 | temiz |
-| 375×812 | yok | 0 | 0 | 0 | temiz |
-| 390×844 | yok | 0 | 0 | 0 | temiz |
-| 414×896 | yok | 0 | 0 | 0 | temiz |
+| 320×700 | yok | 0 | 0 | sadece hero (12,5px ×4) | temiz |
+| 360×780 | yok | 0 | 0 | sadece hero | temiz |
+| 375×812 | yok | 0 | 0 | sadece hero | temiz |
+| 390×844 | yok | 0 | 0 | sadece hero | temiz |
+| 414×896 | yok | 0 | 0 | sadece hero | temiz |
 | 812×375 (yatay) | yok | 0 | 0 | 0 | temiz |
 | 1440×900 | yok | — (masaüstü) | — | — | temiz |
+
+Hero'daki 4 öğe (kicker + iki CTA etiketi) 12,5px; bu, "yazıları daha da küçült" isteği
+üzerine bilinçli. Sayfanın geri kalanında 13px'in altında yazı yok, satır yüksekliği <1,5
+olan öğe yok.
 
 `senaryolar.html` 375×812: taşma yok, 44px altı 0, 13px altı 0.
 

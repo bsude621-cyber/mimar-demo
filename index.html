@@ -526,15 +526,16 @@ footer{background:var(--night);border-top:1px solid var(--line);padding:56px var
 @media(max-width:768px){
   /* alt bar (70px) + senaryo hapı (46px) + nefes payı → CTA'lar hiçbirine değmesin */
   .hero-inner{padding-bottom:calc(var(--mbar-h) + 64px)}
-  .hero-kick{margin-bottom:10px;letter-spacing:.1em;gap:10px}
-  .hero-kick::before{width:26px}
-  .hero h1{font-size:clamp(27px,8vw,34px);line-height:1.08;margin-bottom:14px}
-  .hero-sub{font-size:16px;line-height:1.5;margin-bottom:18px;max-width:none;
-    color:rgba(232,238,244,.88);          /* video üstünde okunurluk (ölçüldü) */
-    display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .hero-kick{font-size:12.5px;margin-bottom:8px;letter-spacing:.08em;gap:9px}
+  .hero-kick::before{width:22px}
+  .hero h1{font-size:clamp(24px,6.6vw,26px);line-height:1.1;margin-bottom:10px}
+  .hero-sub{font-size:15px;line-height:1.4;margin-bottom:14px;max-width:none;
+    color:rgba(232,238,244,.9);           /* video üstünde okunurluk (ölçüldü) */
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
   .hero-cta{flex-wrap:nowrap;gap:8px}
-  .hero-cta .btn{flex:1 1 0;min-width:0;padding:12px 8px;min-height:48px;
-    font-size:13px;letter-spacing:.06em;text-align:center;line-height:1.5}
+  /* görsel yükseklik 48px = dokunma hedefi 48px (44px sınırının üstünde) */
+  .hero-cta .btn{flex:1 1 0;min-width:0;padding:10px 6px;min-height:48px;
+    font-size:12.5px;letter-spacing:.03em;text-align:center;line-height:1.35}
   /* video boğulmasın: ekranın üst ~%50'si neredeyse temiz kalır */
   .hero-scrim{background:
     linear-gradient(180deg,rgba(8,13,21,.5) 0%,rgba(8,13,21,.04) 22%,
