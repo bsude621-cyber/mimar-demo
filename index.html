@@ -24,7 +24,7 @@
        h=3 media/hero3.*  Işıklı atriyum
        s=a frames/a/      Portikodan atriyuma yürüyüş
        s=b frames/b/      Maketten gerçek iç mekâna
-     MOBİL SET (innerWidth < 768 iken otomatik): media/m/hero*.mp4|webm (960px)
+     MOBİL SET (dar ekran ya da alçak yatay ekranda otomatik): media/m/hero*.mp4|webm (1280×720)
        ve frames/am, frames/bm (720px, 2 karede bir). Yeni kare/hero üretirsen
        mobil setini de üret — README "Mobil uyum" bölümündeki ffmpeg komutları.
      Karşılaştırma: senaryolar.html · Teslimde HERO/SCRL sabitlerini sabitle.
@@ -521,6 +521,34 @@ footer{background:var(--night);border-top:1px solid var(--line);padding:56px var
   .tile a{min-height:44px;display:inline-flex;align-items:center;justify-content:center}
   .contact-cta .btn,.hero-cta .btn{flex:1 1 auto;justify-content:center}
 }
+/* HERO — mobilde video görünsün: başlık/dolgu/boşluk küçülür,
+   dokunma hedefi 48px, gövde 16px, etiket 13px korunur */
+@media(max-width:768px){
+  /* alt bar (70px) + senaryo hapı (46px) + nefes payı → CTA'lar hiçbirine değmesin */
+  .hero-inner{padding-bottom:calc(var(--mbar-h) + 64px)}
+  .hero-kick{margin-bottom:10px;letter-spacing:.1em;gap:10px}
+  .hero-kick::before{width:26px}
+  .hero h1{font-size:clamp(27px,8vw,34px);line-height:1.08;margin-bottom:14px}
+  .hero-sub{font-size:16px;line-height:1.5;margin-bottom:18px;max-width:none;
+    color:rgba(232,238,244,.88);          /* video üstünde okunurluk (ölçüldü) */
+    display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .hero-cta{flex-wrap:nowrap;gap:8px}
+  .hero-cta .btn{flex:1 1 0;min-width:0;padding:12px 8px;min-height:48px;
+    font-size:13px;letter-spacing:.06em;text-align:center;line-height:1.5}
+  /* video boğulmasın: ekranın üst ~%50'si neredeyse temiz kalır */
+  .hero-scrim{background:
+    linear-gradient(180deg,rgba(8,13,21,.5) 0%,rgba(8,13,21,.04) 22%,
+      rgba(8,13,21,.04) 52%,rgba(8,13,21,.26) 72%,rgba(8,13,21,.55) 100%),
+    linear-gradient(90deg,rgba(8,13,21,.3) 0%,rgba(8,13,21,.1) 46%,transparent 74%)}
+  /* karartma yalnızca metnin arkasında: en parlak hero senaryosunda bile
+     kontrast garanti altında (ölçüm README'de) */
+  .hero-inner{position:relative;z-index:2}
+  .hero-inner::before{content:"";position:absolute;left:0;right:0;bottom:0;top:38%;
+    z-index:-1;pointer-events:none;
+    background:linear-gradient(180deg,rgba(8,13,21,0) 0%,rgba(8,13,21,.54) 20%,
+      rgba(8,13,21,.76) 48%,rgba(8,13,21,.84) 100%)}
+  .demo-toggle{padding:0 14px;letter-spacing:.08em}
+}
 /* yatay mod (ör. 812×375): hero yüksekliği ekrana sığsın */
 @media(max-width:1100px) and (max-height:520px) and (orientation:landscape){
   .hero{min-height:0}
@@ -988,6 +1016,10 @@ footer{background:var(--night);border-top:1px solid var(--line);padding:56px var
 (function(){
 'use strict';
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+/* Hafif mobil medya setinin ölçütü — CSS'teki mobil media query'leri ile aynı sınırlar.
+   Yatay moddaki telefon da (ör. 812×375) mobil sayılır, yoksa 7 MB'lık masaüstü
+   kare seti iniyordu. */
+const MOBILE = innerWidth < 768 || (innerHeight < 520 && innerWidth < 1100);
 
 /* =========================================================
    SENARYO SEÇİMİ  —  ?h=1|2|3  (hero videosu)  ?s=a|b  (scroll videosu)
@@ -1059,8 +1091,16 @@ if (heroVideo){
     /* iOS Safari <source> listesinde webm'i seçip çözemezse video sessizce donar.
        Kural: formatı canPlayType ile seç → TEK src ver → error'da diğerine düş.
        Mobilde 960px'lik hafif set (media/m/) inar. */
-    const mob  = innerWidth < 768;
+    const mob  = MOBILE;
     const base = (mob ? 'media/m/hero' : 'media/hero') + HERO;
+    /* MOBİL KADRAJ: 16:9 video dikey ekranda object-fit:cover ile kırpılınca
+       yatayda yalnızca ~%26'lık şerit görünüyor. Her hero'nun kareleri dikey
+       şeritlere bölünüp kenar/detay yoğunluğu ölçüldü (ağırlık merkezi):
+       4 zaman örneğinde (t=1,5,9,13 sn) her kadraj penceresi, ekranda metnin
+       ÜSTÜNDE kalan bant (karenin üst %45'i) için sıcak ışık + kontrast + parlaklık
+       ile puanlandı: h1 %80, h2 %72, h3 %60.
+       Kare/video setini değiştirirsen bu üç değeri yeniden ölç. */
+    if (mob) heroVideo.style.objectPosition = ({'1':'80%','2':'72%','3':'60%'}[HERO] || '50%') + ' center';
     const webmOK = !!heroVideo.canPlayType('video/webm; codecs="vp9"');
     const order  = webmOK ? ['.webm','.mp4'] : ['.mp4','.webm'];   // Safari → mp4
     let fmt = 0;
@@ -1104,7 +1144,7 @@ COPY[SCRL].forEach((row, i) => {
   const ctx = canvas.getContext('2d', {alpha:false});
 
   const FRAME_COUNT = 120;                     // ffmpeg fps ile BİREBİR aynı olmalı
-  const isMobile    = innerWidth < 768;
+  const isMobile    = MOBILE;
   const STEP        = isMobile ? 2 : 1;        // mobilde kareyi seyrelt → yarı bant genişliği
   // mobil set: frames/am, frames/bm → 720px genişlik, 2 karede bir (60 kare ≈ 1,1 MB)
   const DIR         = 'frames/' + SCRL + (isMobile ? 'm' : '') + '/';
