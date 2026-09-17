@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>6 Senaryo — Mimarlık Demo</title>
 <meta name="robots" content="noindex">
 <style>
@@ -99,12 +99,29 @@ footer{margin-top:70px;padding-top:26px;border-top:1px solid var(--line);
 
 @media(max-width:1080px){ .grid{grid-template-columns:repeat(2,1fr)} }
 @media(max-width:700px){
-  .wrap{padding:24px 18px 70px}
+  .wrap{padding:24px max(18px,env(safe-area-inset-left)) calc(70px + env(safe-area-inset-bottom))}
   .topbar{margin-bottom:32px}
   .brand-sub{display:none}
   .grid{grid-template-columns:1fr;gap:20px}
   .duo{aspect-ratio:2/1}
   header .kick{margin-bottom:16px}
+  /* mobil: 13/16 px taban + 44 px dokunma hedefi */
+  .brand{min-height:44px}
+  .brand-mono{line-height:1.5}
+  .brand-name{line-height:1.5}
+  .back{font-size:13px;letter-spacing:.12em;min-height:44px;display:inline-flex;
+    align-items:center;padding:10px 16px;line-height:1.5}
+  header .kick{font-size:13px;letter-spacing:.22em;line-height:1.5}
+  header p{font-size:16px;line-height:1.65}
+  .chip{font-size:13px;line-height:1.5;padding:10px 15px}
+  .pane .tag{font-size:13px;letter-spacing:.1em;line-height:1.5;padding:4px 8px}
+  .no{font-size:13px;letter-spacing:.2em;line-height:1.5}
+  .meta div{font-size:13px;line-height:1.5}
+  .meta .k{font-size:13px;letter-spacing:.08em;width:58px;padding-top:0;line-height:1.5}
+  .note{font-size:16px;line-height:1.6}
+  .open{font-size:13px;letter-spacing:.14em;min-height:48px;padding:14px 18px;line-height:1.5}
+  footer{font-size:13px;line-height:1.5}
+  footer a{display:inline-flex;align-items:center;min-height:44px}
 }
 @media(prefers-reduced-motion:reduce){ .card{transition:none} .card:hover{transform:none} }
 </style>
