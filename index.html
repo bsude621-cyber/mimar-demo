@@ -1199,9 +1199,19 @@ COPY[SCRL].forEach((row, i) => {
   /* --- kare çizimi (cover-fit) --- */
   function drawFrame(p){
     let idx = Math.floor(p * (FRAME_COUNT - 1)) + 1;
-    idx = Math.max(1, Math.min(FRAME_COUNT, Math.round((idx-1)/STEP)*STEP + 1));
-    const im = imgs[idx];
-    if (!im || !im.complete || !im.naturalWidth) return false;
+    /* STEP>1 iken yalnızca 1, 1+STEP, … yüklenir; son bölümde yuvarlama
+       yüklenmemiş son kareyi (120) istiyordu → telefonda sahne sonunda video
+       kaybolup placeholder çiziliyordu. Artık en yakın YÜKLÜ kare gösteriliyor
+       (yavaş bağlantıda henüz inmemiş kare için de aynı). */
+    const LAST = FRAME_COUNT - ((FRAME_COUNT - 1) % STEP);
+    idx = Math.max(1, Math.min(LAST, Math.round((idx-1)/STEP)*STEP + 1));
+    const ok = i => { const m = imgs[i]; return m && m.complete && m.naturalWidth; };
+    let im = null;
+    for (let d = 0; d <= LAST; d += STEP){
+      if (ok(idx - d)){ im = imgs[idx - d]; break; }
+      if (ok(idx + d)){ im = imgs[idx + d]; break; }
+    }
+    if (!im) return false;
     const ir = im.naturalWidth / im.naturalHeight, cr = W / H;
     let dw, dh;
     if (ir > cr){ dh = H; dw = H * ir; } else { dw = W; dh = W / ir; }
@@ -1272,7 +1282,7 @@ COPY[SCRL].forEach((row, i) => {
 
   function draw(p){
     if (!W || !H) return;
-    if (!framesReady || !drawFrame(p)) drawPlaceholder(p);
+    if (!drawFrame(p)) drawPlaceholder(p);   // tek bir kare bile inmişse placeholder yok
   }
 
   /* --- metin sahneleri: band = gir&kal, bell = gir-çık --- */
