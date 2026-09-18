@@ -549,6 +549,9 @@ footer{background:var(--night);border-top:1px solid var(--line);padding:56px var
     background:linear-gradient(180deg,rgba(8,13,21,0) 0%,rgba(8,13,21,.54) 20%,
       rgba(8,13,21,.76) 48%,rgba(8,13,21,.84) 100%)}
   .demo-toggle{padding:0 14px;letter-spacing:.08em}
+  /* kapanış kartı senaryo hapının (46px) üstünde bitsin — telefon testinde
+     hap kartın sağ alt köşesine biniyordu */
+  .scrub-card{bottom:calc(var(--mbar-h) + 66px + env(safe-area-inset-bottom))}
 }
 /* ≤359 px: iki düğme yan yana sığmıyor → alt satıra geçsin, kırpılmasın */
 @media(max-width:359px){
